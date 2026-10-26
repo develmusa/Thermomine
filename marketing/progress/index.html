@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TikTok Clip Progress</title>
+<style>
+  :root { --bg: #0b1214; --card: #121c1f; --line: #22313a; --text: #e6eef0; --muted: #8fa3a8;
+          --green: #47e07a; --blue: #5b8cff; --amber: #ffb547; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, sans-serif; }
+  header { padding: 24px 16px 8px; max-width: 1100px; margin: 0 auto; }
+  h1 { margin: 0; font-size: 22px; }
+  .sub { color: var(--muted); font-size: 13px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 8px 16px 40px; display: grid; gap: 16px;
+         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  .card h2 { margin: 0 0 4px; font-size: 16px; }
+  .state { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+  .state b { color: var(--text); }
+  .bar { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; margin-bottom: 12px; }
+  .bar > div { height: 100%; width: 0; background: var(--amber); transition: width .6s; }
+  .bar.done > div { background: var(--green); }
+  .media { aspect-ratio: 9 / 16; background: #000; border-radius: 8px; overflow: hidden; display: grid; place-items: center; }
+  .media img, .media video { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .placeholder { color: var(--muted); font-size: 13px; text-align: center; padding: 16px; }
+  footer { max-width: 1100px; margin: 0 auto; padding: 0 16px 24px; color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>TikTok clips: aquarium mine</h1>
+  <div class="sub">Updates automatically · last update <span id="updated">…</span></div>
+</header>
+<main>
+  <section class="card">
+    <h2>AI clip (Hailuo, MiniMax H3)</h2>
+    <div class="state" id="h-state">…</div>
+    <div class="bar" id="h-bar"><div></div></div>
+    <div class="media" id="h-media"><div class="placeholder">Generating at Hailuo…</div></div>
+  </section>
+  <section class="card">
+    <h2>Colour change (Blender, desktop GPU)</h2>
+    <div class="state" id="c-state">…</div>
+    <div class="bar" id="c-bar"><div></div></div>
+    <div class="media" id="c-media"><div class="placeholder">Waiting for the first frame…</div></div>
+  </section>
+  <section class="card">
+    <h2>Final TikTok cut</h2>
+    <div class="state" id="f-state">Assembled once both clips are ready</div>
+    <div class="bar" id="f-bar"><div></div></div>
+    <div class="media" id="f-media"><div class="placeholder">Not cut yet</div></div>
+  </section>
+</main>
+<header><h1>Concepts: Blender image → MiniMax video</h1>
+  <div class="sub">First frame rendered in Blender (exact product) · video from MiniMax Hailuo 2.3 via the API</div></header>
+<main id="concepts"></main>
+<footer>Runs locally on this laptop only (127.0.0.1). AI clip: label it as AI-generated when you post it on TikTok.</footer>
+<script>
+const shown = {};
+function bar(id, pct, done) {
+  const el = document.getElementById(id);
+  el.classList.toggle("done", !!done);
+  el.firstElementChild.style.width = Math.max(0, Math.min(100, pct || 0)) + "%";
+}
+function showVideo(boxId, src) {
+  if (shown[boxId]) return;
+  shown[boxId] = true;
+  document.getElementById(boxId).innerHTML =
+    `<video src="${src}?t=${Date.now()}" controls autoplay loop muted playsinline></video>`;
+}
+async function tick() {
+  let s;
+  try { s = await (await fetch("status.json?t=" + Date.now())).json(); } catch { return; }
+  document.getElementById("updated").textContent = s.updated;
+
+  const h = s.hailuo || {};
+  const hp = h.percent ?? (h.state === "done" ? 100 : 0);
+  document.getElementById("h-state").innerHTML = `<b>${h.state || "?"}</b>${h.percent != null ? " · " + h.percent + " %" : ""}`;
+  bar("h-bar", hp, h.state === "done");
+  if (s.clips["clip_ai_pushin.mp4"]) showVideo("h-media", "clips/clip_ai_pushin.mp4");
+
+  const c = s.colour || {};
+  const cp = c.total ? 100 * c.frames / c.total : 0;
+  document.getElementById("c-state").innerHTML = `<b>${c.state || "?"}</b> · ${c.frames ?? "?"} / ${c.total ?? "?"} frames`;
+  bar("c-bar", cp, c.state === "done");
+  if (s.clips["clip_colour_change.mp4"]) showVideo("c-media", "clips/clip_colour_change.mp4");
+  else if (c.frames) document.getElementById("c-media").innerHTML =
+    `<img src="colour_latest.png?t=${Date.now()}" alt="Latest rendered frame">`;
+
+  if (s.clips["tiktok_final.mp4"]) {
+    document.getElementById("f-state").innerHTML = "<b>done</b>";
+    bar("f-bar", 100, true);
+    showVideo("f-media", "clips/tiktok_final.mp4");
+  }
+}
+const CONCEPTS = [
+  ["1_warning_red", "Warning hook", "“POV: your heater died overnight”, red glow in a dark room"],
+  ["2_aesthetic_tank", "Aesthetic tank", "Planted tank, neon tetras swim in, green"],
+  ["4_asmr_macro", "ASMR macro", "Bubbles past the glowing slots, blue"],
+  ["6_shipwreck_theme", "Themed tank", "Next to a shipwreck, for themed-tank fans"],
+];
+const STATE_PCT = { submitting: 5, queued: 10, preparing: 15, queueing: 20, processing: 60, success: 95, done: 100 };
+function buildConcepts() {
+  document.getElementById("concepts").innerHTML = CONCEPTS.map(([id, title, desc]) => `
+    <section class="card" id="cc-${id}">
+      <h2>${title}</h2>
+      <div class="state">${desc}</div>
+      <div class="state" id="cs-${id}">waiting…</div>
+      <div class="bar" id="cb-${id}"><div></div></div>
+      <div class="media" id="cm-${id}"><img src="concepts/${id}.png" alt="${title} first frame" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'placeholder',textContent:'Image is still rendering…'}))"></div>
+    </section>`).join("");
+}
+async function tickConcepts() {
+  let jobs = {};
+  try { jobs = await (await fetch("concepts/jobs.json?t=" + Date.now())).json(); } catch {}
+  for (const [id] of CONCEPTS) {
+    const j = jobs[id];
+    const st = document.getElementById("cs-" + id);
+    if (!j) { st.innerHTML = "<b>image ready</b> · video not started"; continue; }
+    st.innerHTML = `<b>video: ${j.state}</b>${j.updated ? " · " + j.updated : ""}${j.error ? " · " + JSON.stringify(j.error).slice(0, 120) : ""}`;
+    bar("cb-" + id, STATE_PCT[j.state] ?? 0, j.state === "done");
+    if (j.state === "done" && j.video) showVideo("cm-" + id, "concepts/" + j.video);
+  }
+}
+buildConcepts();
+tick(); setInterval(tick, 4000);
+tickConcepts(); setInterval(tickConcepts, 4000);
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+	"autodeskProduct": "Fusion",
+	"type": "script",
+	"author": "",
+	"description": {
+		"": "Builds the aquarium mine thermometer (bottom part and bayonet cap) with native timeline features."
+	},
+	"supportedOS": "windows|mac",
+	"editEnabled": true
+}

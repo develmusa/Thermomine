@@ -1,0 +1,29 @@
+# sandbox / editor placeholders (they also appear in subfolders)
+.*
+!.gitignore
+
+# Blender backups and Python caches
+*.blend1
+__pycache__/
+
+# render frames, previews, checks, scratch images
+marketing/tiktok/frames_colour/
+marketing/tiktok/check/
+marketing/concepts/*_preview.png
+marketing/concepts/_*.png
+marketing/concepts/jobs.json
+marketing/progress/status.json
+marketing/progress/*.log
+marketing/progress/colour_latest.png
+
+# PCB build intermediates and downloaded 3D-model cache
+pcb/3dmodels/
+pcb/*.dsn
+pcb/*.ses
+pcb/*.kicad_prl
+pcb/fab/positions_raw.csv
+pcb/fab/gerber/
+*.log
+
+# duplicate bundle of the print files
+print/*.zip
