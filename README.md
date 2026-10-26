@@ -4,7 +4,7 @@
 
 Thermomine is a 3D-printed naval mine that sits on the gravel of your tank. A sealed LED inside glows **blue** when the water is too cold, **green** when it's just right, and **red** when it's too warm. There's no display to squint at and no app: one look at the tank is enough.
 
-![Thermomine in a planted aquarium](docs/images/hero.jpg)
+<p align="center"><img src="docs/images/thermomine.gif" alt="Thermomine glowing blue, then green, then red" width="400"></p>
 
 > Product renders (Blender, Cycles). The product hasn't been photographed yet.
 
@@ -29,6 +29,8 @@ The colour fades smoothly over 1.5 °C at each limit. You can change the range i
 - Both cables run over the tank rim with a drip loop, so water running down the cables drips off before it reaches the board.
 
 ## The mine
+
+![Thermomine in a planted aquarium](docs/images/hero.jpg)
 
 <img src="docs/images/packshot.jpg" alt="Thermomine packshot" width="420" align="right">
 
