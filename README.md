@@ -68,7 +68,11 @@ The colour fades smoothly over 1.5 °C at each limit. You can change the range i
 
 **3. Flash the firmware.** Open [`firmware/aquarium_mine_temp/aquarium_mine_temp.ino`](firmware/aquarium_mine_temp/aquarium_mine_temp.ino) in the Arduino IDE. Select "ESP32C3 Dev Module" and turn on "USB CDC On Boot". Install the OneWire, DallasTemperature and Adafruit NeoPixel libraries. For the first upload, hold BOOT while pressing RESET.
 
-**Workshop drawings:** A3 part drawings to SN EN ISO conventions (first-angle projection, ISO 129-1 dimensioning, ISO 2768-m): [`TM-001-01 bottom`](print/drawings/Thermomine_TM-001-01_bottom.pdf), [`TM-001-02 cap`](print/drawings/Thermomine_TM-001-02_cap.pdf).
+**Workshop drawings:** A3 part drawings to SN EN ISO conventions (first-angle projection, ISO 128 line types, ISO 129-1 dimensioning, ISO 2768-m). Click a preview to open the PDF:
+
+| TM-001-01 Bottom part | TM-001-02 Cap |
+|---|---|
+| [![Drawing TM-001-01, bottom part](docs/images/drawing_TM-001-01_bottom.jpg)](print/drawings/Thermomine_TM-001-01_bottom.pdf) | [![Drawing TM-001-02, cap](docs/images/drawing_TM-001-02_cap.jpg)](print/drawings/Thermomine_TM-001-02_cap.pdf) |
 
 **Parts to buy:** a 5 V WS2811 12 mm IP68 bullet pixel, a waterproof DS18B20 probe, a USB-C power supply and aquarium-safe silicone.
 
